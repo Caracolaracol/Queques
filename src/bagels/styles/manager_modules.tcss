@@ -152,7 +152,7 @@
 
 .h {
   #categories-container {
-    height: 80%
+    height: 1fr;
   }
 }
 
