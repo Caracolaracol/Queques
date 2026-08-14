@@ -6,7 +6,6 @@ from textual.widgets import Static
 from bagels.components.bagel import Bagel
 from bagels.components.modules.budgets import Budgets
 from bagels.components.modules.categories import Categories
-from bagels.components.modules.people import People
 from bagels.components.modules.spending import Spending
 from bagels.managers.accounts import get_accounts_count
 from bagels.managers.categories import get_categories_count
@@ -26,7 +25,6 @@ class Manager(Static):
         self.spendings_module = Spending(page_parent=self)
         self.categories_module = Categories()
         self.budgets_module = Budgets(page_parent=self)
-        self.people_module = People()
 
     def on_mount(self) -> None:
         pass
@@ -38,7 +36,6 @@ class Manager(Static):
             self.spendings_module.rebuild()
             self.categories_module.rebuild()
             self.budgets_module.rebuild()
-            self.people_module.rebuild()
 
     # region Callbacks
     # ------------- Callbacks ------------ #
@@ -65,7 +62,6 @@ class Manager(Static):
                     yield self.budgets_module
                 with Container(classes="right"):
                     yield self.categories_module
-                    yield self.people_module
         else:
             with Center():
                 yield Bagel()

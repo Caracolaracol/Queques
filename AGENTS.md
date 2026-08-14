@@ -54,6 +54,9 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
 2. **Montos sin decimales** (CLP): `round_decimals = 0`; la datatable formatea floats con
    `CONFIG.defaults.round_decimals`; `utils/format.py::money_str()` para labels;
    los restricts de inputs de montos se vuelven `\d*` (enteros) cuando round_decimals == 0.
+3. **Módulo People removido de la UI** (usuario único): fuera de `manager.py` (import,
+   instanciación, rebuild, yield) y de la entrada del jumper en `app.py` (`people-container`).
+   El modelo/manager de personas y los splits de registros quedan intactos.
 
 ## Gotchas (importantes)
 

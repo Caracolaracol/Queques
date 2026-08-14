@@ -78,7 +78,6 @@ class App(TextualApp):
                 "templates-container": "t",
                 "datemode-container": "p",
                 "categories-container": "a",
-                "people-container": "p",
                 "budgets-container": "b",
                 "spending-container": "s",
             },
