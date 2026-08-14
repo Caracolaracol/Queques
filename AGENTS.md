@@ -57,6 +57,11 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
 3. **Módulo People removido de la UI** (usuario único): fuera de `manager.py` (import,
    instanciación, rebuild, yield) y de la entrada del jumper en `app.py` (`people-container`).
    El modelo/manager de personas y los splits de registros quedan intactos.
+4. **Modo "Display by Person" removido de Records**: sin botón `Person (w)`, sin hotkey
+   `display_by_person` (también fuera de config.py y del config.yaml), sin la vista por
+   persona en `_table_builder.py` (DisplayMode solo tiene DATE) y sin el case "p" de
+   edición en `records/_cud.py`. Los splits por persona en el formulario de registro
+   siguen funcionando (solo aparecen al togglear splits con `s`).
 
 ## Gotchas (importantes)
 

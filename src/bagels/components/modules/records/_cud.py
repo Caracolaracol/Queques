@@ -2,10 +2,6 @@ from datetime import datetime
 
 from bagels.forms.form import Form
 from bagels.forms.record_forms import RecordForm
-from bagels.managers.persons import (
-    get_person_by_id,
-    update_person,
-)
 from bagels.managers.record_templates import create_template_from_record
 from bagels.managers.records import (
     create_record,
@@ -92,30 +88,6 @@ class RecordCUD:
                     timeout=3,
                 )
 
-        def check_result_person(result) -> None:
-            if result:
-                try:
-                    update_person(id, result)
-                except Exception as e:
-                    self.app.notify(
-                        title="Error", message=f"{e}", severity="error", timeout=10
-                    )
-                else:
-                    self.app.notify(
-                        title="Success",
-                        message="Person updated",
-                        severity="information",
-                        timeout=3,
-                    )
-                    self.page_parent.rebuild()
-            else:
-                self.app.notify(
-                    title="Discarded",
-                    message="Person not updated",
-                    severity="warning",
-                    timeout=3,
-                )
-
         # ----------------- - ---------------- #
         match type:
             case "r":
@@ -171,22 +143,6 @@ class RecordCUD:
                         timeout=3,
                     )
                 self.page_parent.rebuild()
-            case "p":
-                person = get_person_by_id(id)
-                if not person:
-                    self.app.notify(
-                        title="Error",
-                        message="Person not found",
-                        severity="error",
-                        timeout=2,
-                    )
-                    return
-                self.app.push_screen(
-                    InputModal(
-                        "Edit Person", form=self.person_form.get_filled_form(person.id)
-                    ),
-                    callback=check_result_person,
-                )
             case _:
                 pass
 

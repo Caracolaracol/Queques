@@ -5,9 +5,6 @@ from rich.text import Text
 from bagels.components.datatable import DataTable
 from bagels.components.indicators import EmptyIndicator
 from bagels.config import CONFIG
-from bagels.managers.persons import (
-    get_persons_with_splits,
-)
 from bagels.managers.records import (
     get_record_total_split_amount,
     get_records,
@@ -17,7 +14,6 @@ from bagels.utils.format import format_date_to_readable
 
 class DisplayMode:
     DATE = "d"
-    PERSON = "p"
 
 
 class RecordTableBuilder:
@@ -30,8 +26,6 @@ class RecordTableBuilder:
         records = self._fetch_records()
 
         match self.displayMode:
-            case DisplayMode.PERSON:
-                self._build_person_view(table, records)
             case DisplayMode.DATE:
                 self._build_date_view(table, records)
             case _:
@@ -66,16 +60,6 @@ class RecordTableBuilder:
         table.clear()
         table.columns.clear()
         match self.displayMode:
-            case DisplayMode.PERSON:
-                table.add_columns(
-                    " ",
-                    "Date",
-                    "Record date",
-                    "Category",
-                    "Amount",
-                    "To account",
-                    "Label",
-                )
             case DisplayMode.DATE:
                 table.add_columns(" ", "Category", "Amount", "Label", "Account")
 
@@ -243,88 +227,3 @@ class RecordTableBuilder:
             return f"[green]{CONFIG.symbols.split_paid}[/green]"
         else:
             return f"[grey]{CONFIG.symbols.split_unpaid}[/grey]"
-
-    # region Person view
-
-    def _fetch_person_records(self) -> list:
-        params = {
-            "offset": self.page_parent.filter["offset"],
-            "offset_type": self.page_parent.filter["offset_type"],
-        }
-        if self.FILTERS["enabled"]():
-            params["category_piped_names"] = self.FILTERS["category"]()
-            params["operator_amount"] = self.FILTERS["amount"]()
-            params["label"] = self.FILTERS["label"]()
-        return get_persons_with_splits(**params)
-
-    def _build_person_view(self, table: DataTable, _) -> None:
-        persons = self._fetch_person_records()
-
-        # Display each person and their splits
-        for person in persons:
-            if person.splits:  # Person has splits for this month
-                # Add person header
-                self._add_group_header_row(
-                    table, person.name, key=f"p-{str(person.id)}"
-                )
-
-                # Add splits for this person
-                total_unpaid = 0  # Initialize total unpaid amount for this person
-                for split in person.splits:
-                    record = split.record
-                    paid_icon = (
-                        f"[green]{CONFIG.symbols.split_paid}[/green]"
-                        if split.isPaid
-                        else f"[red]{CONFIG.symbols.split_unpaid}[/red]"
-                    )
-                    date = (
-                        format_date_to_readable(split.paidDate)
-                        if split.paidDate
-                        else "Not paid"
-                    )
-                    record_date = format_date_to_readable(record.date)
-                    category = f"[{record.category.color.lower()}]{CONFIG.symbols.category_color}[/{record.category.color.lower()}] {record.category.name}"
-
-                    # Calculate amount and update total of unpaid amounts
-                    if not split.isPaid:
-                        split_amount = split.amount
-                        if record.isIncome:
-                            split_amount = -split_amount  # Negate income amounts
-                        total_unpaid += split_amount
-
-                    amount = (
-                        f"[red]{CONFIG.symbols.amount_negative}[/red] {split.amount}"
-                        if record.isIncome
-                        else f"[green]{CONFIG.symbols.amount_positive}[/green] {split.amount}"
-                    )
-                    account = f"→ {split.account.name}" if split.account else "-"
-
-                    label_string = self._get_label_string(record.label)
-
-                    table.add_row(
-                        " ",
-                        f"{paid_icon} {date}",
-                        record_date,
-                        category,
-                        amount,
-                        account,
-                        label_string,
-                        key=f"s-{split.id}",
-                    )
-
-                # Add total row for this person showing unpaid amount. We reverse the color indicator.
-                if total_unpaid == 0:
-                    total_display = "0.0"
-                elif total_unpaid < 0:
-                    total_display = f"[green]{abs(total_unpaid)}[/green]"
-                else:
-                    total_display = f"[red]{abs(total_unpaid)}[/red]"
-                table.add_row(
-                    " ",
-                    "[bold]Total Unpaid[/bold]",
-                    "",
-                    "",
-                    f"[bold]{total_display}[/bold]",
-                    "",
-                    key=f"t-{str(person.id)}",
-                )

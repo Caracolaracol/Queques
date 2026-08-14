@@ -12,12 +12,10 @@ from bagels.components.indicators import EmptyIndicator
 from bagels.components.modules.records._cud import RecordCUD
 from bagels.components.modules.records._table_builder import RecordTableBuilder
 from bagels.config import CONFIG
-from bagels.forms.person_forms import PersonForm
 
 
 class DisplayMode:
     DATE = "d"
-    PERSON = "p"
 
 
 class Records(RecordCUD, RecordTableBuilder, Static):
@@ -38,12 +36,6 @@ Records .label-highlight-match {
         (CONFIG.hotkeys.edit, "edit", "Edit"),
         (CONFIG.hotkeys.home.new_transfer, "new_transfer", "Transfer"),
         (CONFIG.hotkeys.home.toggle_splits, "toggle_splits", "Toggle Splits"),
-        Binding(
-            CONFIG.hotkeys.home.display_by_person,
-            "display_by_person",
-            "Display by Person",
-            show=False,
-        ),
         Binding(
             CONFIG.hotkeys.home.display_by_date,
             "display_by_date",
@@ -68,7 +60,6 @@ Records .label-highlight-match {
         )
         super().__setattr__("border_title", "Records")
         self.page_parent = parent
-        self.person_form = PersonForm()
         self.FILTERS = {
             "category": lambda: self.query_one("#filter-category").value,
             "amount": lambda: self.query_one("#filter-amount").value,
@@ -95,16 +86,9 @@ Records .label-highlight-match {
         self.query_one("#display-date").classes = (
             "selected" if displayMode == DisplayMode.DATE else ""
         )
-        self.query_one("#display-person").classes = (
-            "selected" if displayMode == DisplayMode.PERSON else ""
-        )
 
     def action_toggle_splits(self) -> None:
         self.show_splits = not self.show_splits
-        self.rebuild()
-
-    def action_display_by_person(self) -> None:
-        self.displayMode = DisplayMode.PERSON
         self.rebuild()
 
     def action_display_by_date(self) -> None:
@@ -119,8 +103,6 @@ Records .label-highlight-match {
                 self.page_parent.action_next_month()
             case "display-date":
                 self.action_display_by_date()
-            case "display-person":
-                self.action_display_by_person()
             case _:
                 pass
 
@@ -147,10 +129,6 @@ Records .label-highlight-match {
             with Container(id="display-selector"):
                 yield Button(
                     f"Date ({CONFIG.hotkeys.home.display_by_date})", id="display-date"
-                )
-                yield Button(
-                    f"Person ({CONFIG.hotkeys.home.display_by_person})",
-                    id="display-person",
                 )
             with Container(classes="filtering", id="filter-container"):
                 yield Input(id="filter-category", placeholder="Filter category")
