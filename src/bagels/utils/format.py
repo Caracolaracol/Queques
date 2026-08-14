@@ -16,6 +16,14 @@ def parse_formula_expression(value: str) -> float:
         return 0
 
 
+def money_str(value: float) -> str:
+    """Format an amount for display. With 0 decimals, integers have no trailing .0."""
+    value = round(value, CONFIG.defaults.round_decimals)
+    if CONFIG.defaults.round_decimals == 0:
+        return str(int(value))
+    return str(value)
+
+
 def format_date_to_readable(date) -> str:
     today = datetime.now().date()
     date = date.date() if isinstance(date, datetime) else date

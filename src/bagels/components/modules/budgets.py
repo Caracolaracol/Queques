@@ -4,6 +4,7 @@ from textual.widgets import Button, Input, Label, Static
 from rich.text import Text
 
 from bagels.config import CONFIG, write_state
+from bagels.utils.format import money_str
 from bagels.managers.categories import get_category_budget_rows, update_category_budget
 from bagels.managers.utils import (
     dynamic_cache,
@@ -94,7 +95,9 @@ class Budgets(Static):
             self, f"#savings-{self.savings_assess_metric}", "set_classes", ["selected"]
         )
         restrict_percentage = r"0\.([0-9]){0,2}"
-        restrict_amount = r"\d*\.?\d{0,2}"
+        restrict_amount = (
+            r"\d*" if CONFIG.defaults.round_decimals == 0 else r"\d*\.?\d{0,2}"
+        )
         input = self.query_one("#savings-input")
         if self.savings_assess_metric.startswith("percentage"):
             input.value = str(CONFIG.state.budgeting.savings_percentage)
@@ -125,7 +128,9 @@ class Budgets(Static):
 
     def _rebuild_category_budgets(self) -> None:
         offset = self.page_parent.offset
-        restrict_amount = r"\d*\.?\d{0,2}"
+        restrict_amount = (
+            r"\d*" if CONFIG.defaults.round_decimals == 0 else r"\d*\.?\d{0,2}"
+        )
         for category, spent in dynamic_cache(get_category_budget_rows, offset):
             input = self.query_one(f"#budget-{category.id}", Input)
             input.restrict = restrict_amount
@@ -135,12 +140,12 @@ class Budgets(Static):
                 input.value = ""
 
             spent_label = self.query_one(f"#budget-spent-{category.id}", Label)
-            spent_label.update(f"spent {spent}")
+            spent_label.update(f"spent {money_str(spent)}")
 
             left_label = self.query_one(f"#budget-left-{category.id}", Label)
             if category.monthlyBudget is not None:
                 remaining = round(category.monthlyBudget - spent, 2)
-                left_label.update(f"left {remaining}")
+                left_label.update(f"left {money_str(remaining)}")
                 left_label.styles.color = "green" if remaining >= 0 else "red"
             else:
                 left_label.update("")
@@ -213,16 +218,16 @@ class Budgets(Static):
         row2.styles.grid_columns = f"{p_expenses}% 1fr"
 
         label_spent_amount = income_bar_container.query_one("#label-spent-amount")
-        label_spent_amount.update(str(net_expenses))
+        label_spent_amount.update(money_str(net_expenses))
         label_save_amount = income_bar_container.query_one("#label-save-amount")
-        label_save_amount.update(str(amount_to_save))
+        label_save_amount.update(money_str(amount_to_save))
         label_remaining_amount = income_bar_container.query_one(
             "#label-remaining-amount"
         )
         remaining = round(
             net_income - net_expenses - amount_to_save, CONFIG.defaults.round_decimals
         )
-        label_remaining_amount.update(str(remaining))
+        label_remaining_amount.update(money_str(remaining))
 
         row3 = income_bar_container.query_one("#row-3")
         row3.display = not not net_expenses  # only display if there are expenses
@@ -247,11 +252,11 @@ class Budgets(Static):
 
             row3.styles.grid_columns = f"{p_must}% {p_need}% 1fr"
             label_spent_must_amount = row3.query_one("#label-spent-must-amount")
-            label_spent_must_amount.update(str(expenses_must))
+            label_spent_must_amount.update(money_str(expenses_must))
             label_spent_need_amount = row3.query_one("#label-spent-need-amount")
-            label_spent_need_amount.update(str(expenses_need))
+            label_spent_need_amount.update(money_str(expenses_need))
             label_spent_want_amount = row3.query_one("#label-want-remaining-amount")
-            label_spent_want_amount.update(f"{str(expenses_want)} / {str(want_quota)}")
+            label_spent_want_amount.update(f"{money_str(expenses_want)} / {money_str(want_quota)}")
 
             row5.styles.width = f"{p_tospend}%"
             bar_want_quota = row5.query_one("#bar-must-quota")

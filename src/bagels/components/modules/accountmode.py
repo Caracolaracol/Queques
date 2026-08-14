@@ -6,6 +6,7 @@ from textual.widgets import Label, ListItem, ListView, Static
 
 from bagels.components.indicators import EmptyIndicator
 from bagels.config import CONFIG
+from bagels.utils.format import money_str
 from bagels.forms.account_forms import AccountForm
 from bagels.managers.accounts import (
     create_account,
@@ -116,7 +117,7 @@ class AccountMode(ScrollableContainer):
 
         super().__setattr__(
             "border_title",
-            f"Accounts @= {round(net_balance, CONFIG.defaults.round_decimals)}",
+            f"Accounts @= {money_str(net_balance)}",
         )
 
     # region Callbacks

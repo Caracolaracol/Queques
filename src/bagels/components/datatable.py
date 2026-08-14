@@ -6,6 +6,7 @@ from itertools import chain, zip_longest
 from operator import itemgetter
 from typing import Any, Callable, ClassVar, Generic, Iterable, NamedTuple, TypeVar
 
+from bagels.config import CONFIG
 import rich.repr
 from rich.console import RenderableType
 from rich.padding import Padding
@@ -189,7 +190,7 @@ def default_cell_formatter(
         possible_markup = True
         content = obj
     elif isinstance(obj, float):
-        content = f"{obj:.2f}"
+        content = f"{obj:.{CONFIG.defaults.round_decimals}f}"
     elif not is_renderable(obj):
         content = str(obj)
     else:
