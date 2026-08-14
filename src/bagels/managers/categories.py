@@ -206,3 +206,66 @@ def delete_category(category_id):
         return False
     finally:
         session.close()
+
+
+# region Budget
+def get_category_budget_rows(offset: int = 0):
+    """Top-level categories with their monthly budget and spent this month (rollup).
+
+    Returns a list of (category, spent_this_month) tuples for non-deleted
+    top-level categories. Spending rolls up subcategories into their parent.
+    """
+    session = Session()
+    try:
+        start_of_period, end_of_period = get_start_end_of_period(offset, "month")
+
+        stmt = (
+            select(Record)
+            .options(joinedload(Record.category))
+            .filter(
+                Record.date >= start_of_period,
+                Record.date < end_of_period,
+                Record.isIncome == False,  # noqa: E712
+                Record.isTransfer == False,  # noqa: E712
+                Record.categoryId.isnot(None),
+            )
+        )
+        totals: dict[int, float] = {}
+        for record in session.scalars(stmt).all():
+            split_total = sum(split.amount for split in record.splits)
+            record_amount = record.amount - split_total
+            category = record.category
+            category_id = (
+                category.parentCategoryId
+                if category.parentCategoryId is not None
+                else category.id
+            )
+            totals[category_id] = totals.get(category_id, 0.0) + record_amount
+
+        categories = session.scalars(
+            select(Category)
+            .filter(
+                Category.deletedAt.is_(None),
+                Category.parentCategoryId.is_(None),
+            )
+            .order_by(Category.id)
+        ).all()
+
+        return [(category, round(totals.get(category.id, 0.0), 2)) for category in categories]
+    finally:
+        session.close()
+
+
+def update_category_budget(category_id: int, amount: float | None):
+    """Set or clear the monthly budget for a category."""
+    session = Session()
+    try:
+        category = session.get(Category, category_id)
+        if category:
+            category.monthlyBudget = amount
+            session.commit()
+            return True
+        return False
+    finally:
+        session.close()
+# endregion

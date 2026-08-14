@@ -1,8 +1,10 @@
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
 from textual.widgets import Button, Input, Label, Static
+from rich.text import Text
 
 from bagels.config import CONFIG, write_state
+from bagels.managers.categories import get_category_budget_rows, update_category_budget
 from bagels.managers.utils import (
     dynamic_cache,
     get_income_to_use,
@@ -73,6 +75,15 @@ class Budgets(Static):
             self._write_state("budgeting.wants_spending_assess_metric", metric)
         self.rebuild()
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        """Persist a category budget when the user presses Enter in its input."""
+        if event.input.id.startswith("budget-"):
+            category_id = int(event.input.id.split("-")[1])
+            value = event.value.strip()
+            amount = float(value) if value else None
+            update_category_budget(category_id, amount)
+            self.rebuild()
+
     # region Builders
     # ------------- Builders ------------- #
 
@@ -110,6 +121,29 @@ class Budgets(Static):
             input.value = str(CONFIG.state.budgeting.wants_spending_amount)
             input.restrict = restrict_amount
         self._rebuild_income_bar()
+        self._rebuild_category_budgets()
+
+    def _rebuild_category_budgets(self) -> None:
+        offset = self.page_parent.offset
+        restrict_amount = r"\d*\.?\d{0,2}"
+        for category, spent in dynamic_cache(get_category_budget_rows, offset):
+            input = self.query_one(f"#budget-{category.id}", Input)
+            input.restrict = restrict_amount
+            if category.monthlyBudget is not None:
+                input.value = str(category.monthlyBudget)
+            else:
+                input.value = ""
+
+            spent_label = self.query_one(f"#budget-spent-{category.id}", Label)
+            spent_label.update(f"spent {spent}")
+
+            left_label = self.query_one(f"#budget-left-{category.id}", Label)
+            if category.monthlyBudget is not None:
+                remaining = round(category.monthlyBudget - spent, 2)
+                left_label.update(f"left {remaining}")
+                left_label.styles.color = "green" if remaining >= 0 else "red"
+            else:
+                left_label.update("")
 
     def _rebuild_income_bar(self) -> None:
         offset = self.page_parent.offset
@@ -293,5 +327,24 @@ class Budgets(Static):
                 yield Label("Saved")
             with Container(id="row-5"):
                 yield Static(id="bar-must-quota")
+        with Container(id="category-budgets", classes="budget-section"):
+            yield Label("Category budgets (monthly)", id="category-budgets-title")
+            yield Label(
+                "Set a budget per category and press Enter. Left = budget - spent this month.",
+                classes="budget-hint",
+            )
+            for category, _ in dynamic_cache(get_category_budget_rows, 0):
+                with Horizontal(classes="budget-row"):
+                    yield Label(
+                        Text(category.name, style=category.color),
+                        classes="budget-name",
+                    )
+                    yield Label("", id=f"budget-spent-{category.id}", classes="budget-spent")
+                    yield Label("", id=f"budget-left-{category.id}", classes="budget-left")
+                    yield Input(
+                        placeholder="0.0",
+                        id=f"budget-{category.id}",
+                        classes="budget-input",
+                    )
         with Container(classes="empty-bar"):
             yield Label("Nothing to display. Budgeting depends on your income!")

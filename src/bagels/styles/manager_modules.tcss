@@ -180,3 +180,41 @@
 #people-container {
   height: 1fr;
 }
+/* ------------- Category budgets ------------- */
+
+#category-budgets {
+  height: auto;
+  margin-top: 1;
+  border-top: round $panel;
+  padding-top: 1;
+
+  #category-budgets-title {
+    text-style: bold;
+    margin-bottom: 1;
+  }
+
+  .budget-hint {
+    opacity: 0.5;
+    margin-bottom: 1;
+  }
+
+  .budget-row {
+    height: 1;
+    & > .budget-name {
+      width: 1fr;
+      margin-right: 2;
+    }
+    & > .budget-spent {
+      opacity: 0.6;
+      margin-right: 2;
+      width: auto;
+    }
+    & > .budget-left {
+      width: auto;
+      margin-right: 2;
+    }
+    & > .budget-input {
+      width: 12;
+    }
+  }
+}

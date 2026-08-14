@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from sqlalchemy import Column, DateTime, Integer, String, Enum as SQLEnum, ForeignKey
+from sqlalchemy import Column, DateTime, Float, Integer, String, Enum as SQLEnum, ForeignKey
 from sqlalchemy.orm import relationship
 from .database.db import Base
 
@@ -28,6 +28,7 @@ class Category(Base):
     name = Column(String, nullable=False)
     nature = Column(SQLEnum(Nature), nullable=False)
     color = Column(String, nullable=False)
+    monthlyBudget = Column(Float, nullable=True)
 
     records = relationship("Record", back_populates="category")
     parentCategory = relationship(
