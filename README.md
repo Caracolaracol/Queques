@@ -1,9 +1,9 @@
-# 🥯 Bagels - TUI Expense Tracker
+# 🥯 Cuchuflí
 
-Powerful expense tracker that lives in your terminal.
+> Personal fork ("Cuchuflí") of [Bagels](https://github.com/EnhancedJax/Bagels) — a powerful expense tracker that lives in your terminal.
 
 ![PyPI - Version](https://img.shields.io/pypi/v/bagels?style=for-the-badge)
-![GitHub License](https://img.shields.io/github/license/Caracolaracol/Bagels?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/Caracolaracol/Cuchufli?style=for-the-badge)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/Bagels?style=for-the-badge)
 
 <!-- <a title="This tool is Tool of The Week on Terminal Trove, The $HOME of all things in the terminal" href="https://terminaltrove.com/bagels"><img src="https://cdn.terminaltrove.com/media/badges/tool_of_the_week/svg/terminal_trove_tool_of_the_week_black_on_white_bg.svg" alt="Terminal Trove Tool of The Week" height="28" /></a> -->
@@ -33,9 +33,9 @@ Some notable features include:
 - Spending plottings / graphs with estimated spendings
 - Budgetting tool for saving money and limiting unnecessary spendings
 
-## 🍴 Fork features ("caracol")
+## 🍴 Fork features ("Cuchuflí")
 
-This is a personal fork of [EnhancedJax/Bagels](https://github.com/EnhancedJax/Bagels). Upstream is inactive; this fork adds (see [CHANGELOG](CHANGELOG.md) for detail):
+This is a personal fork of [EnhancedJax/Bagels](https://github.com/EnhancedJax/Bagels), published as **Cuchuflí**. Upstream is inactive; this fork adds (see [CHANGELOG](CHANGELOG.md) for detail):
 
 - **Category budgets**: monthly budget per category, with automatic rollup from subcategories, read-only parent rows, income-only categories excluded, and a docked Total row
 - **Whole-amount money (CLP)**: amounts render without decimals everywhere (respects `round_decimals: 0`)
@@ -50,7 +50,7 @@ This is a personal fork of [EnhancedJax/Bagels](https://github.com/EnhancedJax/B
 > **Note**: the commands below install the *upstream* package from PyPI. To get the **fork features** above, install from this repository instead:
 >
 > ```bash
-> uv tool install --from git+https://github.com/Caracolaracol/Bagels bagels
+> uv tool install --from git+https://github.com/Caracolaracol/Cuchufli bagels
 > ```
 
 <details open>
@@ -140,7 +140,7 @@ Please read the [migration guide](MIGRATION.md) for migration from other service
 ## 🛠️ Development setup
 
 ```sh
-git clone https://github.com/Caracolaracol/Bagels.git
+git clone https://github.com/Caracolaracol/Cuchufli.git
 cd Bagels
 uv run pre-commit install
 mkdir instance

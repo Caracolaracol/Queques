@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (fork caracol)
+## Unreleased (Cuchuflí, fork caracol)
 
 - Records: removidos los **filtros** (inputs de categoría/monto/label y toggle) y el
   botón **Date (q)** — este último no hacía nada (solo existía el modo DATE). La tabla
