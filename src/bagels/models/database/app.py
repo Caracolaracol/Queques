@@ -14,6 +14,7 @@ from bagels.models.database.db import Base
 from bagels.models.person import Person  # noqa: F401
 from bagels.models.record import Record  # noqa: F401
 from bagels.models.record_template import RecordTemplate  # noqa: F401
+from bagels.models.service_account import ServiceAccount  # noqa: F401
 from bagels.models.split import Split  # noqa: F401
 from bagels.models.wishlist import WishlistItem  # noqa: F401
 

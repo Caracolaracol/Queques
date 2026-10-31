@@ -2,6 +2,13 @@
 
 ## Unreleased (fork caracol)
 
+- Nuevo módulo **Service accounts** en Home (reemplaza a Templates en esa
+  columna): guarda números de cuenta de clientes por proveedor externo
+  (proveedor + número + alias + notas), con edición y archivado (soft-delete
+  vía `deletedAt`). Dedupe case-insensitive por proveedor+número. Tabla
+  `service_account` auto-creada por schema sync. El módulo Templates ya no se
+  monta en Home; las plantillas siguen disponibles desde el modal de records
+  (`ctrl+t`).
 - Wishlist: **reordenar por prioridad** — `Shift+↑`/`Shift+↓` (o `Ctrl+↑`/`Ctrl+↓`)
   mueven el item seleccionado un puesto arriba/abajo; el cursor sigue al item
   movido para repeticiones rápidas. Nueva columna `position` (auto-migrada por

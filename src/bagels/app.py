@@ -75,7 +75,7 @@ class App(TextualApp):
                 "accounts-container": "a",
                 "insights-container": "i",
                 "records-container": "r",
-                "templates-container": "t",
+                "service-accounts-container": "v",
                 "datemode-container": "p",
                 "categories-container": "a",
                 "budgets-container": "b",

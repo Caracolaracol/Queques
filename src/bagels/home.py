@@ -9,7 +9,7 @@ from bagels.components.modules.datemode import DateMode
 from bagels.components.modules.incomemode import IncomeMode
 from bagels.components.modules.insights import Insights
 from bagels.components.modules.records import Records
-from bagels.components.modules.templates import Templates
+from bagels.components.modules.serviceaccounts import ServiceAccounts
 from bagels.components.modules.welcome import Welcome
 from bagels.config import CONFIG
 from bagels.managers.accounts import get_accounts_count, get_all_accounts
@@ -65,15 +65,6 @@ class Home(Static):
             "Select next account",
             show=False,
         ),
-        Binding("1", "select_template_1", "Template 1", show=False),
-        Binding("2", "select_template_2", "Template 2", show=False),
-        Binding("3", "select_template_3", "Template 3", show=False),
-        Binding("4", "select_template_4", "Template 4", show=False),
-        Binding("5", "select_template_5", "Template 5", show=False),
-        Binding("6", "select_template_6", "Template 6", show=False),
-        Binding("7", "select_template_7", "Template 7", show=False),
-        Binding("8", "select_template_8", "Template 8", show=False),
-        Binding("9", "select_template_9", "Template 9", show=False),
     ]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -98,22 +89,21 @@ class Home(Static):
         self.income_mode_module = IncomeMode(parent=self)
         self.record_module = Records(parent=self)
         self.insights_module = Insights(parent=self)
-        self.templates_module = Templates(parent=self)
+        self.service_accounts_module = ServiceAccounts()
 
     def on_mount(self) -> None:
         pass
 
     # -------------- Helpers ------------- #
 
-    def rebuild(self, templates=False) -> None:
+    def rebuild(self) -> None:
         self.insights_module.rebuild()
         self.accounts_module.rebuild()
         self.income_mode_module.rebuild()
         self.date_mode_module.rebuild()
+        self.service_accounts_module.rebuild()
         if self.isReady:
             self.record_module.rebuild()
-            if templates:
-                self.templates_module.rebuild(reset_state=True)
 
     def get_filter_label(self) -> str:
         return format_period_to_readable(self.filter)
@@ -251,36 +241,6 @@ class Home(Static):
         self.insights_module.rebuild()
         self.record_module.rebuild()
 
-    # region Templates
-    # ------------- Template ------------- #
-
-    def action_select_template_1(self) -> None:
-        self.templates_module.select_template(1)
-
-    def action_select_template_2(self) -> None:
-        self.templates_module.select_template(2)
-
-    def action_select_template_3(self) -> None:
-        self.templates_module.select_template(3)
-
-    def action_select_template_4(self) -> None:
-        self.templates_module.select_template(4)
-
-    def action_select_template_5(self) -> None:
-        self.templates_module.select_template(5)
-
-    def action_select_template_6(self) -> None:
-        self.templates_module.select_template(6)
-
-    def action_select_template_7(self) -> None:
-        self.templates_module.select_template(7)
-
-    def action_select_template_8(self) -> None:
-        self.templates_module.select_template(8)
-
-    def action_select_template_9(self) -> None:
-        self.templates_module.select_template(9)
-
     # region View
     # --------------- View --------------- #
 
@@ -295,7 +255,7 @@ class Home(Static):
                 yield self.insights_module
             with Static(classes="right"):
                 if self.isReady:
-                    yield self.templates_module
+                    yield self.service_accounts_module
                     yield self.record_module
                 else:
                     yield Welcome()

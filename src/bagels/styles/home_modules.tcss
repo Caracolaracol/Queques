@@ -211,32 +211,51 @@
     }
   }
   
-  #templates-container {
-    height: 5;
-  
-    .templates {
-      height: 3;
-  
-      .empty {
-        width: 1fr;
-        margin-top: 1;
-        color: $primary-background-lighten-3;
-        text-align: center;
-      }
-  
-      .template-item {
-        width: auto;
+  #service-accounts-container {
+    height: 10;
+
+    #service-accounts-empty {
+      width: 1fr;
+      margin: 1 0;
+      color: $primary-background-lighten-3;
+      text-align: center;
+    }
+
+    #service-accounts-list {
+      height: 1fr;
+      background: $background;
+
+      .service-account-item {
         height: auto;
         padding: 0 1;
-        layout: horizontal;
-        border: round $secondary;
-  
+        background: $background;
+
         &:focus {
-          border: round $accent;
+          background: $surface;
+          border-left: outer $accent;
         }
-  
-        .dot {
-          padding-right: 1;
+
+        .service-account-item-content {
+          height: auto;
+          layout: horizontal;
+          align-vertical: middle;
+
+          .provider {
+            width: 1fr;
+            text-style: bold;
+          }
+
+          .account-number {
+            width: auto;
+            color: $secondary;
+          }
+
+          .details {
+            width: 1fr;
+            margin-left: 2;
+            color: $primary-background-lighten-3;
+            text-align: right;
+          }
         }
       }
     }

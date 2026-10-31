@@ -37,7 +37,7 @@ class RecordCUD:
                         severity="information",
                         timeout=3,
                     )
-                    self.page_parent.rebuild(templates=result["createTemplate"])
+                    self.page_parent.rebuild()
 
         self.app.push_screen(
             RecordModal(
