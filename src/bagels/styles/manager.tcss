@@ -1,9 +1,14 @@
+#manager-page {
+  overflow-y: hidden;
+}
+
 .h {
   .manager-modules-container {
     layout: horizontal;
   
     & > Container {
       height: 1fr;
+      min-height: 0;
     }
 
     .right {
@@ -31,4 +36,5 @@
   height: 1fr;
   width: 1fr;
   padding: 0 2 1 2;
+  min-height: 0;
 }

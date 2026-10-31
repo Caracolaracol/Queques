@@ -210,15 +210,20 @@ def delete_category(category_id):
 
 # region Budget
 def get_category_budget_rows(offset: int = 0):
-    """Top-level categories with their monthly budget and spent this month (rollup).
+    """Categories with their budget and spent this month.
 
-    Returns a list of (category, spent_this_month) tuples for non-deleted
-    top-level categories. Spending rolls up subcategories into their parent.
+    Returns a list of (category, spent_this_month, level, budget, editable):
+    - top-level first (level 0), then their subcategories (level 1)
+    - a parent's spent rolls up its subcategories
+    - a parent's budget is the SUM of its subcategories' budgets (not editable);
+      leaf categories and subcategories use their own monthlyBudget (editable)
+    - income-only top-level categories (e.g. Salary) are excluded
     """
     session = Session()
     try:
         start_of_period, end_of_period = get_start_end_of_period(offset, "month")
 
+        # own spent per category (expense records, no rollup yet)
         stmt = (
             select(Record)
             .options(joinedload(Record.category))
@@ -230,28 +235,68 @@ def get_category_budget_rows(offset: int = 0):
                 Record.categoryId.isnot(None),
             )
         )
-        totals: dict[int, float] = {}
+        own_spent: dict[int, float] = {}
         for record in session.scalars(stmt).all():
             split_total = sum(split.amount for split in record.splits)
             record_amount = record.amount - split_total
-            category = record.category
-            category_id = (
-                category.parentCategoryId
-                if category.parentCategoryId is not None
-                else category.id
-            )
-            totals[category_id] = totals.get(category_id, 0.0) + record_amount
+            cat_id = record.categoryId
+            own_spent[cat_id] = own_spent.get(cat_id, 0.0) + record_amount
 
-        categories = session.scalars(
-            select(Category)
-            .filter(
-                Category.deletedAt.is_(None),
-                Category.parentCategoryId.is_(None),
-            )
-            .order_by(Category.id)
+        all_categories = session.scalars(
+            select(Category).filter(Category.deletedAt.is_(None))
         ).all()
+        parent_of = {c.id: c.parentCategoryId for c in all_categories}
 
-        return [(category, round(totals.get(category.id, 0.0), 2)) for category in categories]
+        # Classify top-level categories: those used ONLY for income (e.g. Salary)
+        # are excluded from the expense budget list.
+        def top_id(cat_id: int) -> int:
+            while parent_of.get(cat_id) is not None:
+                cat_id = parent_of[cat_id]
+            return cat_id
+
+        used_for_income: set[int] = set()
+        used_for_expense: set[int] = set()
+        record_rows = session.execute(
+            select(Record.categoryId, Record.isIncome).filter(
+                Record.categoryId.isnot(None),
+                Record.isTransfer == False,  # noqa: E712
+            )
+        ).all()
+        for cat_id, is_income in record_rows:
+            if cat_id not in parent_of:
+                continue
+            t = top_id(cat_id)
+            (used_for_income if is_income else used_for_expense).add(t)
+
+        parents = [
+            c
+            for c in all_categories
+            if c.parentCategoryId is None
+            and not (c.id in used_for_income and c.id not in used_for_expense)
+        ]
+        parents.sort(key=lambda c: c.id)
+
+        rows: list[tuple[Category, float, int, float | None, bool]] = []
+        for parent in parents:
+            children = [
+                c for c in all_categories if c.parentCategoryId == parent.id
+            ]
+            children.sort(key=lambda c: c.id)
+            rollup = own_spent.get(parent.id, 0.0) + sum(
+                own_spent.get(c.id, 0.0) for c in children
+            )
+            if children:
+                # Parent budget = sum of its subcategories' budgets (read-only).
+                parent_budget = sum(
+                    c.monthlyBudget for c in children if c.monthlyBudget is not None
+                )
+                rows.append((parent, round(rollup, 2), 0, parent_budget, False))
+            else:
+                rows.append((parent, round(rollup, 2), 0, parent.monthlyBudget, True))
+            for child in children:
+                rows.append((child, round(own_spent.get(child.id, 0.0), 2), 1, child.monthlyBudget, True))
+
+        return rows
     finally:
         session.close()
 

@@ -1,5 +1,11 @@
 /* ------------ Spending ------------ */
 
+/* Hidden: the category budgets table needs the space. Re-enable by removing
+   this rule (or display: block) if the spending module is needed again. */
+#spending-container {
+  display: none;
+}
+
 #spending-container {
   height: 1fr;
   layout: grid;
@@ -30,7 +36,8 @@
 /* ------------- Budgets ------------ */
 
 #budgets-container {
-  height: auto;
+  height: 1fr;
+  overflow-y: hidden;
 
   & > .config-rows {
     border-bottom: round $panel;
@@ -183,7 +190,9 @@
 /* ------------- Category budgets ------------- */
 
 #category-budgets {
-  height: auto;
+  height: 1fr;
+  layout: vertical;
+  overflow-y: hidden;
   margin-top: 1;
   border-top: round $panel;
   padding-top: 1;
@@ -198,23 +207,84 @@
     margin-bottom: 1;
   }
 
-  .budget-row {
-    height: 1;
-    & > .budget-name {
-      width: 1fr;
-      margin-right: 2;
-    }
-    & > .budget-spent {
-      opacity: 0.6;
-      margin-right: 2;
-      width: auto;
-    }
-    & > .budget-left {
-      width: auto;
-      margin-right: 2;
-    }
-    & > .budget-input {
-      width: 12;
-    }
+  .budget-rows-container {
+    height: 1fr;
+    overflow-y: auto;
+    padding-left: 2;
+  }
+}
+
+/* Budget table header + rows + total live at the module level (the total row
+   is docked to the bottom of #budgets-container, outside #category-budgets). */
+.budget-table-header {
+  height: 1;
+  padding-left: 2;
+
+  & > Label {
+    opacity: 0.8;
+  }
+
+  & > .budget-name {
+    width: 1fr;
+    margin-right: 2;
+  }
+
+  & > .budget-input {
+    width: 12;
+  }
+
+  & > .budget-spent {
+    width: 12;
+    margin-right: 1;
+  }
+
+  & > .budget-left {
+    width: 12;
+    margin-right: 1;
+  }
+}
+
+.budget-row {
+  height: 1;
+
+  &.zebra-b {
+    background: $panel-darken-1;
+  }
+
+  &.budget-total {
+    height: 2;
+    border-top: heavy $panel-lighten-1;
+    background: $panel-darken-1;
+    dock: bottom;
+    width: 1fr;
+    padding-left: 2;
+  }
+
+  & > .budget-name {
+    width: 1fr;
+    margin-right: 2;
+  }
+
+  & > .budget-spent {
+    opacity: 0.6;
+    width: 12;
+    margin-right: 1;
+  }
+
+  & > .budget-left {
+    width: 12;
+    margin-right: 1;
+  }
+
+  & > .budget-input {
+    width: 12;
+  }
+
+  & > .budget-sum {
+    width: 12;
+    opacity: 0.9;
+    background: $surface;
+    padding: 0 1;
+    color: $text;
   }
 }

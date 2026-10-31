@@ -5,6 +5,7 @@ from bagels.managers.accounts import get_all_accounts_with_balance
 from bagels.managers.categories import get_all_categories_by_freq
 from bagels.managers.record_templates import get_template_by_id
 from bagels.forms.form import Form, FormField, Option, Options
+from bagels.utils.format import money_str
 
 
 class RecordTemplateForm:
@@ -124,6 +125,10 @@ class RecordTemplateForm:
                 case "accountId":
                     field.default_value = template.account.id
                     field.default_value_text = template.account.name
+                case "amount":
+                    field.default_value = (
+                        money_str(value) if value is not None else ""
+                    )
                 case _:
                     field.default_value = str(value) if value is not None else ""
 

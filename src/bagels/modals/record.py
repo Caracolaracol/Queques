@@ -17,6 +17,7 @@ from bagels.managers.persons import create_person, get_all_persons
 from bagels.managers.record_templates import get_template_by_id
 from bagels.modals.base_widget import ModalContainer
 from bagels.modals.input import InputModal
+from bagels.utils.format import money_str
 from bagels.utils.validation import validateForm
 
 
@@ -148,6 +149,8 @@ class RecordModal(InputModal):
                 if not has_heldValue:
                     if field.type == "boolean":
                         fieldWidget.value = getattr(template, field.key)
+                    elif field.key == "amount":
+                        fieldWidget.value = money_str(getattr(template, field.key))
                     else:
                         fieldWidget.value = str(getattr(template, field.key))
                 else:

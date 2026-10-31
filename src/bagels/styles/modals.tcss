@@ -42,8 +42,8 @@
       .container {
         padding: 1 2;
         height: auto;
-        border-left: outer $surface-lighten-2;
-        border-right: outer $surface-lighten-2;
+        border-left: outer $border;
+        border-right: outer $border;
   
         #split-total {
           border-top: double $primary-background;
@@ -55,7 +55,7 @@
           height: auto;
   
           .split {
-            border-top: round $surface-lighten-3;
+            border-top: round $border-blurred;
             height: auto;
             padding-top: 1;
   
@@ -113,7 +113,7 @@
           height: 3;
           layout: horizontal;
           padding: 0 1 1 1;
-          border-top: tall $surface-lighten-2;
+          border-top: tall $border-blurred;
           background: $surface;
   
           &.-highlight {

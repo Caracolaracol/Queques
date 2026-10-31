@@ -5,6 +5,7 @@ from textual.widgets import Label, Static
 from bagels.components.percentage_bar import PercentageBar, PercentageBarItem
 from bagels.config import CONFIG
 from bagels.managers.categories import get_all_categories_records
+from bagels.utils.format import money_str
 from bagels.managers.utils import (
     get_period_average,
     get_period_figures,
@@ -76,8 +77,8 @@ class Insights(Static):
             offset=self.page_parent.filter["offset"],
             offset_type=self.page_parent.filter["offset_type"],
         )
-        period_net_label.update(str(period_net))
-        period_average_label.update(str(period_average))
+        period_net_label.update(money_str(period_net))
+        period_average_label.update(money_str(period_average))
 
         return period_net
 

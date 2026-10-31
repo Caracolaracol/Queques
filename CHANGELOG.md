@@ -1,5 +1,34 @@
 # Changelog
 
+## Unreleased (fork caracol)
+
+- Budgeting: las categorías **padre con subcategorías ya no tienen input** — su
+  budget se muestra read-only como la **suma automática de los budgets de sus
+  subcategorías** (left = suma - gastado). Solo las categorías hoja y subcategorías
+  son editables. El Total suma por nivel 0 sin doble conteo.
+- Budgeting: fila **Total** arreglada — el `border-top` consumía la única fila de la
+  fila anclada, dejando el contenido invisible. Ahora mide 2 filas (borde + contenido)
+  y se verifica por render real (SVG) que "Total | budget | spent | left" aparece
+  siempre en la última fila del módulo.
+- Budgeting: el módulo **Spending** queda oculto en el Manager para que la tabla de
+  budgets use todo el espacio (con scroll vertical si hace falta). Se puede
+  re-habilitar quitando el `display: none` en manager_modules.tcss.
+- Budgeting: fila **Total** al final de la tabla (negrita, borde superior): budget =
+  suma de todos los budgets definidos (incluye subcategorías), spent = gasto real del
+  mes (suma de categorías padre, sin doble conteo), left = diferencia en verde/rojo.
+- Budgeting: la tabla de budgets de categoría ahora muestra **subcategorías** indentadas bajo
+  su padre (spent del padre = rollup de hijos) y tiene **formato de tabla** con header
+  (Category/Budget/Spent/Left) y filas con estilo **zebra**. Al guardar con Enter se
+  muestra una notificación de confirmación.
+- Budgeting: las categorías usadas solo para ingreso (ej. Salary) ya no aparecen en la
+  lista de budgets de categoría (se filtra por uso de records: income-only se excluye).
+- Sin decimales en montos: inputs de budget (mensual, savings, wants), balances de cuentas,
+  insights (neto/promedio), modal de transferencias y plantillas usan `money_str`
+  (respeta `round_decimals=0` para CLP).
+- Tema "caracol" agregado a `BUILTIN_THEMES` (paleta personal: cerise, violet, lavanda, ocre, platinum).
+- Theme activo cambiado a `caracol` en config.
+- Records de la vista principal pasan de semanales a mensuales (`defaults.period: month` en config).
+
 ## 0.3.12
 
 - Sort people in manager page by net due

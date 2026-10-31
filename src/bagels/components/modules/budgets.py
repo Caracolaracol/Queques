@@ -1,5 +1,5 @@
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, Vertical
 from textual.widgets import Button, Input, Label, Static
 from rich.text import Text
 
@@ -83,6 +83,11 @@ class Budgets(Static):
             value = event.value.strip()
             amount = float(value) if value else None
             update_category_budget(category_id, amount)
+            self.app.notify(
+                f"Budget {'saved: ' + money_str(amount) if amount is not None else 'cleared (no limit)'}",
+                title="Category budget",
+                timeout=2,
+            )
             self.rebuild()
 
     # region Builders
@@ -103,7 +108,7 @@ class Budgets(Static):
             input.value = str(CONFIG.state.budgeting.savings_percentage)
             input.restrict = restrict_percentage
         else:
-            input.value = str(CONFIG.state.budgeting.savings_amount)
+            input.value = money_str(CONFIG.state.budgeting.savings_amount)
             input.restrict = restrict_amount
 
         self.wants_spending_assess_metric = (
@@ -121,7 +126,7 @@ class Budgets(Static):
             input.value = str(CONFIG.state.budgeting.wants_spending_percentage)
             input.restrict = restrict_percentage
         else:
-            input.value = str(CONFIG.state.budgeting.wants_spending_amount)
+            input.value = money_str(CONFIG.state.budgeting.wants_spending_amount)
             input.restrict = restrict_amount
         self._rebuild_income_bar()
         self._rebuild_category_budgets()
@@ -131,24 +136,47 @@ class Budgets(Static):
         restrict_amount = (
             r"\d*" if CONFIG.defaults.round_decimals == 0 else r"\d*\.?\d{0,2}"
         )
-        for category, spent in dynamic_cache(get_category_budget_rows, offset):
-            input = self.query_one(f"#budget-{category.id}", Input)
-            input.restrict = restrict_amount
-            if category.monthlyBudget is not None:
-                input.value = str(category.monthlyBudget)
-            else:
-                input.value = ""
-
+        total_budget = 0.0
+        total_spent = 0.0
+        for category, spent, level, budget, editable in dynamic_cache(
+            get_category_budget_rows, offset
+        ):
             spent_label = self.query_one(f"#budget-spent-{category.id}", Label)
             spent_label.update(f"spent {money_str(spent)}")
 
             left_label = self.query_one(f"#budget-left-{category.id}", Label)
-            if category.monthlyBudget is not None:
-                remaining = round(category.monthlyBudget - spent, 2)
+            if budget is not None:
+                remaining = round(budget - spent, 2)
                 left_label.update(f"left {money_str(remaining)}")
                 left_label.styles.color = "green" if remaining >= 0 else "red"
             else:
-                left_label.update("")
+                left_label.update("-")
+
+            if editable:
+                input = self.query_one(f"#budget-{category.id}", Input)
+                input.restrict = restrict_amount
+                input.value = money_str(budget) if budget is not None else ""
+            else:
+                # Parent category: budget = sum of its subcategories (read-only)
+                sum_label = self.query_one(f"#budget-sum-{category.id}", Label)
+                sum_label.update(money_str(budget) if budget else "0")
+
+            if level == 0 and budget is not None:
+                total_budget += budget
+                total_spent += spent
+            elif level == 0:
+                total_spent += spent
+
+        total_budget_label = self.query_one("#budget-total-budget", Label)
+        total_budget_label.update(money_str(total_budget))
+        total_spent_label = self.query_one("#budget-total-spent", Label)
+        total_spent_label.update(f"spent {money_str(total_spent)}")
+        total_left_label = self.query_one("#budget-total-left", Label)
+        total_remaining = round(total_budget - total_spent, 2)
+        total_left_label.update(f"left {money_str(total_remaining)}")
+        total_left_label.styles.color = (
+            "green" if total_remaining >= 0 else "red"
+        )
 
     def _rebuild_income_bar(self) -> None:
         offset = self.page_parent.offset
@@ -338,18 +366,50 @@ class Budgets(Static):
                 "Set a budget per category and press Enter. Left = budget - spent this month.",
                 classes="budget-hint",
             )
-            for category, _ in dynamic_cache(get_category_budget_rows, 0):
-                with Horizontal(classes="budget-row"):
-                    yield Label(
-                        Text(category.name, style=category.color),
-                        classes="budget-name",
-                    )
-                    yield Label("", id=f"budget-spent-{category.id}", classes="budget-spent")
-                    yield Label("", id=f"budget-left-{category.id}", classes="budget-left")
-                    yield Input(
-                        placeholder="0.0",
-                        id=f"budget-{category.id}",
-                        classes="budget-input",
-                    )
+            with Horizontal(classes="budget-table-header"):
+                yield Label("Category", classes="budget-name")
+                yield Label("Budget", classes="budget-input")
+                yield Label("Spent", classes="budget-spent")
+                yield Label("Left", classes="budget-left")
+            with Vertical(id="budget-rows", classes="budget-rows-container"):
+                for i, (category, _spent, level, _budget, editable) in enumerate(
+                    dynamic_cache(get_category_budget_rows, 0)
+                ):
+                    zebra = "zebra-a" if i % 2 == 0 else "zebra-b"
+                    indent = "   " * level
+                    with Horizontal(classes=f"budget-row {zebra}"):
+                        yield Label(
+                            Text(indent + category.name, style=category.color),
+                            classes="budget-name",
+                            id=f"budget-name-{category.id}",
+                        )
+                        if editable:
+                            yield Input(
+                                placeholder="0.0",
+                                id=f"budget-{category.id}",
+                                classes="budget-input",
+                            )
+                        else:
+                            # Parent with subcategories: budget is read-only
+                            # (auto-sum of its subcategories).
+                            yield Label(
+                                "",
+                                id=f"budget-sum-{category.id}",
+                                classes="budget-input budget-sum",
+                            )
+                        yield Label(
+                            "",
+                            id=f"budget-spent-{category.id}",
+                            classes="budget-spent",
+                        )
+                        yield Label(
+                            "", id=f"budget-left-{category.id}", classes="budget-left"
+                        )
+        # Total row docked to the bottom of the whole module so it is always visible.
+        with Horizontal(id="budget-total-row", classes="budget-row budget-total"):
+            yield Label("Total", classes="budget-name")
+            yield Label("", id="budget-total-budget", classes="budget-input")
+            yield Label("", id="budget-total-spent", classes="budget-spent")
+            yield Label("", id="budget-total-left", classes="budget-left")
         with Container(classes="empty-bar"):
             yield Label("Nothing to display. Budgeting depends on your income!")

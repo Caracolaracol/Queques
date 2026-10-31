@@ -9,6 +9,7 @@ from bagels.managers.categories import get_all_categories_by_freq
 from bagels.managers.persons import get_all_persons
 from bagels.managers.record_templates import get_record_templates
 from bagels.managers.records import get_record_by_id
+from bagels.utils.format import money_str
 
 
 class RecordForm:
@@ -231,6 +232,10 @@ class RecordForm:
                 case "label":
                     field.default_value = str(value) if value is not None else ""
                     field.type = "string"  # disable autocomplete
+                case "amount":
+                    field.default_value = (
+                        money_str(value) if value is not None else ""
+                    )
                 case _:
                     field.default_value = str(value) if value is not None else ""
 
@@ -257,6 +262,10 @@ class RecordForm:
                         field.default_value_text = split.person.name
                     case "isPaid":
                         field.default_value = split.isPaid
+                    case "amount":
+                        field.default_value = (
+                            money_str(value) if value is not None else ""
+                        )
                     case _:
                         field.default_value = str(value) if value is not None else ""
 

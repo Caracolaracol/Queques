@@ -17,6 +17,7 @@ from bagels.forms.transfer_forms import TransferForm
 from bagels.managers.accounts import get_all_accounts_with_balance
 from bagels.managers.record_templates import get_template_by_id
 from bagels.modals.base_widget import ModalContainer
+from bagels.utils.format import money_str
 from bagels.utils.validation import validateForm
 
 
@@ -33,7 +34,7 @@ class Accounts(ListView):
                         classes="name " + ("hidden-name" if account.hidden else ""),
                     ),
                     Label(
-                        str(account.balance),
+                        money_str(account.balance),
                         classes="balance "
                         + ("hidden-balance" if account.hidden else ""),
                     ),
@@ -129,7 +130,7 @@ class TransferModal(ModalScreen):
         if "field-label" in event.input.id:
             template = get_template_by_id(event.input.heldValue)
             fieldWidget = self.query_one("#field-amount")
-            fieldWidget.value = str(getattr(template, "amount"))
+            fieldWidget.value = money_str(getattr(template, "amount"))
 
             self.fromAccount = template.accountId
             self.toAccount = template.transferToAccountId

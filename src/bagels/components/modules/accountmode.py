@@ -37,7 +37,7 @@ class AccountsList(ListView):
                         classes="left-container",
                     ),
                     Label(
-                        str(account.balance),
+                        money_str(account.balance),
                         classes="balance",
                         id=f"account-{account.id}-balance",
                     ),
@@ -87,7 +87,7 @@ class AccountMode(ScrollableContainer):
                 continue
             # Update balance
             self.query_one(f"#account-{account.id}-balance").update(
-                str(account.balance)
+                money_str(account.balance)
             )
 
             # Update account container classes

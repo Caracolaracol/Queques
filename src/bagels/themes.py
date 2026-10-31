@@ -202,6 +202,61 @@ BUILTIN_THEMES: dict[str, Theme] = {
             "button-color-foreground": "#FFFCF0",
         },
     ),
+    "caracol": Theme(
+        name="caracol",
+        primary="#d94a6d",  # cerise
+        secondary="#9b7fd4",  # violetl (lavanda)
+        accent="#9b7fd4",  # violetl
+        warning="#de7f26",  # ocre
+        error="#ff4466",  # error pi
+        success="#4a7a4a",  # green
+        foreground="#e8cfd4",  # platinum
+        background="#232031",  # dark
+        surface="#312559",  # violet
+        panel="#3a3255",  # borderMuted pi
+        dark=True,
+        variables={
+            "block-cursor-background": "#d94a6d",  # cerise
+            "block-cursor-foreground": "#111111",  # cursor-text ghostty
+            "block-cursor-text-style": "none",
+            "input-cursor-foreground": "#111111",
+            "input-cursor-background": "#d94a6d",
+            "input-selection-background": "#9b7fd4 35%",
+            "border": "#d94a6d",  # cerise
+            "border-blurred": "#3a3255",
+            "footer-key-foreground": "#9b7fd4",
+            "footer-description-foreground": "#c0a8a2",  # timberwolf
+            "button-color-foreground": "#232031",
+        },
+    ),
+    "papel": Theme(
+        name="papel",
+        primary="#A34A63",
+        secondary="#6F5A82",
+        accent="#925020",
+        warning="#8B5A14",
+        error="#A3444E",
+        success="#526B4E",
+        foreground="#352F2A",
+        background="#FFF5C8",
+        surface="#ECE5D9",
+        panel="#E2D8CA",
+        dark=False,
+        variables={
+            "border": "#B2A48A",
+            "border-blurred": "#C2B69E",
+            "footer-background": "#E2D8CA",
+            "footer-key-foreground": "#A34A63",
+            "footer-description-foreground": "#6F655B",
+            "block-cursor-background": "#A34A63",
+            "block-cursor-foreground": "#FFF5C8",
+            "block-cursor-text-style": "none",
+            "input-cursor-foreground": "#FFF5C8",
+            "input-cursor-background": "#A34A63",
+            "input-selection-background": "#DED3C4",
+            "button-color-foreground": "#352F2A",
+        },
+    ),
     # "textual-light": Theme(
     #     name="textual-light",
     #     primary="#004578",

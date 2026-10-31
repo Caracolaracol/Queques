@@ -6,6 +6,7 @@ from rich.text import Text
 from bagels.forms.form import Form, FormField, Option, Options
 from bagels.managers.record_templates import get_transfer_templates
 from bagels.models.record import Record
+from bagels.utils.format import money_str
 
 
 class TransferForm:
@@ -116,6 +117,10 @@ class TransferForm:
                 case "label":
                     field.default_value = str(value) if value is not None else ""
                     field.type = "string"  # disable autocomplete
+                case "amount":
+                    field.default_value = (
+                        money_str(value) if value is not None else ""
+                    )
                 case _:
                     field.default_value = str(value) if value is not None else ""
 
