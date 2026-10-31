@@ -1,9 +1,8 @@
-# AGENTS.md — Bagels (fork "Cuchuflí")
+# AGENTS.md — Bagels (fork "Queque")
 
 Tracker de gastos en TUI. **Fork local de [EnhancedJax/Bagels](https://github.com/EnhancedJax/Bagels)**
 (el repo upstream está inactivo: último release v0.3.12, jul 2025). Publicado como
-**Cuchuflí** en https://github.com/Caracolaracol/Cuchufli (GitHub no acepta tildes en
-nombres de repo → `Cuchufli`). Rama de trabajo: `caracol`.
+**Queque** en https://github.com/Caracolaracol/Queque. Rama de trabajo: `caracol`.
 
 ## Stack
 

@@ -1,9 +1,9 @@
-# <img src="public/cuchufli.svg" width="48" height="48" align="absmiddle" alt="Cuchuflí icon"> Cuchuflí
+# <img src="public/queque.svg" width="48" height="48" align="absmiddle" alt="Queque icon"> Queque
 
-> Personal fork ("Cuchuflí") of [Bagels](https://github.com/EnhancedJax/Bagels) — a powerful expense tracker that lives in your terminal.
+> Personal fork ("Queque") of [Bagels](https://github.com/EnhancedJax/Bagels) — a powerful expense tracker that lives in your terminal.
 
 ![PyPI - Version](https://img.shields.io/pypi/v/bagels?style=for-the-badge)
-![GitHub License](https://img.shields.io/github/license/Caracolaracol/Cuchufli?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/Caracolaracol/Queque?style=for-the-badge)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/Bagels?style=for-the-badge)
 
 <!-- <a title="This tool is Tool of The Week on Terminal Trove, The $HOME of all things in the terminal" href="https://terminaltrove.com/bagels"><img src="https://cdn.terminaltrove.com/media/badges/tool_of_the_week/svg/terminal_trove_tool_of_the_week_black_on_white_bg.svg" alt="Terminal Trove Tool of The Week" height="28" /></a> -->
@@ -31,9 +31,9 @@ Some notable features include:
 - Spending plottings / graphs with estimated spendings
 - Budgetting tool for saving money and limiting unnecessary spendings
 
-## 🍴 Fork features ("Cuchuflí")
+## 🍴 Fork features ("Queque")
 
-**Cuchuflí** is a personal fork of [Bagels](https://github.com/EnhancedJax/Bagels) by EnhancedJax — a modified version (2026) of the original expense tracker. Upstream is inactive (last release v0.3.12, July 2025), so this fork carries its own improvements. All changes vs. the original Bagels (see [CHANGELOG](CHANGELOG.md) for detail):
+**Queque** is a personal fork of [Bagels](https://github.com/EnhancedJax/Bagels) by EnhancedJax — a modified version (2026) of the original expense tracker. Upstream is inactive (last release v0.3.12, July 2025), so this fork carries its own improvements. All changes vs. the original Bagels (see [CHANGELOG](CHANGELOG.md) for detail):
 
 ### Records
 
@@ -68,7 +68,7 @@ Some notable features include:
 > **Note**: the commands below install the *upstream* package from PyPI. To get the **fork features** above, install from this repository instead:
 >
 > ```bash
-> uv tool install --from git+https://github.com/Caracolaracol/Cuchufli bagels
+> uv tool install --from git+https://github.com/Caracolaracol/Queque bagels
 > ```
 
 <details open>
@@ -158,7 +158,7 @@ Please read the [migration guide](MIGRATION.md) for migration from other service
 ## 🛠️ Development setup
 
 ```sh
-git clone https://github.com/Caracolaracol/Cuchufli.git
+git clone https://github.com/Caracolaracol/Queque.git
 cd Bagels
 uv run pre-commit install
 mkdir instance
@@ -193,7 +193,7 @@ Backlog:
 
 ## Attributions
 
-- **Cuchuflí is a modified fork of [Bagels](https://github.com/EnhancedJax/Bagels)** by EnhancedJax and contributors — all credit to them
+- **Queque is a modified fork of [Bagels](https://github.com/EnhancedJax/Bagels)** by EnhancedJax and contributors — all credit to them
 - Heavily inspired by [posting](https://posting.sh/)
 - Bagels is built with [textual](https://textual.textualize.io/)
 - It's called bagels because I like bagels
