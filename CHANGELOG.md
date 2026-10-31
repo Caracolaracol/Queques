@@ -2,10 +2,21 @@
 
 ## Unreleased (fork caracol)
 
+- Wishlist: **reordenar por prioridad** — `Shift+↑`/`Shift+↓` (o `Ctrl+↑`/`Ctrl+↓`)
+  mueven el item seleccionado un puesto arriba/abajo; el cursor sigue al item
+  movido para repeticiones rápidas. Nueva columna `position` (auto-migrada por
+  schema sync; filas existentes reciben su `id` como orden inicial = mismo orden
+  de creación de siempre). Orden persistente en la BD.
 - Budgeting: las categorías **padre con subcategorías ya no tienen input** — su
   budget se muestra read-only como la **suma automática de los budgets de sus
   subcategorías** (left = suma - gastado). Solo las categorías hoja y subcategorías
   son editables. El Total suma por nivel 0 sin doble conteo.
+- Wishlist: fix de borrado/toggle — el ListView no resaltaba ningún item al montar
+  (index None), así que `d` y `Espacio` no tenían objetivo. Ahora el primer item
+  queda auto-seleccionado y la selección se preserva tras cada rebuild.
+- Nuevo módulo **Wishlist** (lista de deseos) en el Manager, debajo de Categories:
+  input para agregar items, `Enter`/`Espacio` para marcar hecho (✓/○), `d` para
+  borrar. Persistente en la BD (tabla `wishlist`, auto-creada por schema sync).
 - Budgeting: fila **Total** arreglada — el `border-top` consumía la única fila de la
   fila anclada, dejando el contenido invisible. Ahora mide 2 filas (borde + contenido)
   y se verifica por render real (SVG) que "Total | budget | spent | left" aparece

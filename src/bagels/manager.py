@@ -7,6 +7,7 @@ from bagels.components.bagel import Bagel
 from bagels.components.modules.budgets import Budgets
 from bagels.components.modules.categories import Categories
 from bagels.components.modules.spending import Spending
+from bagels.components.modules.wishlist import Wishlist
 from bagels.managers.accounts import get_accounts_count
 from bagels.managers.categories import get_categories_count
 
@@ -25,6 +26,7 @@ class Manager(Static):
         self.spendings_module = Spending(page_parent=self)
         self.categories_module = Categories()
         self.budgets_module = Budgets(page_parent=self)
+        self.wishlist_module = Wishlist()
 
     def on_mount(self) -> None:
         pass
@@ -62,6 +64,7 @@ class Manager(Static):
                     yield self.budgets_module
                 with Container(classes="right"):
                     yield self.categories_module
+                    yield self.wishlist_module
         else:
             with Center():
                 yield Bagel()

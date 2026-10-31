@@ -15,6 +15,7 @@ from bagels.models.person import Person  # noqa: F401
 from bagels.models.record import Record  # noqa: F401
 from bagels.models.record_template import RecordTemplate  # noqa: F401
 from bagels.models.split import Split  # noqa: F401
+from bagels.models.wishlist import WishlistItem  # noqa: F401
 
 db_engine = create_engine(f"sqlite:///{database_file().resolve()}")
 Session = sessionmaker(bind=db_engine)

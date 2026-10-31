@@ -176,6 +176,36 @@
   }
 }
 
+/* ------------- Wishlist ------------- */
+
+#wishlist-container {
+  height: 1fr;
+  min-height: 6;
+  margin-top: 1;
+
+  Vertical {
+    height: 1fr;
+  }
+
+  #wishlist-input {
+    margin-bottom: 1;
+  }
+
+  #wishlist-list {
+    height: 1fr;
+  }
+
+  .wishlist-item {
+    color: $text;
+    padding: 0 1;
+  }
+
+  .wishlist-done {
+    color: $text-disabled;
+    text-style: strike;
+  }
+}
+
 /* ------------- People ------------- */
 
 .h {
