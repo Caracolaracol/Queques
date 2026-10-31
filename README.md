@@ -21,28 +21,46 @@ Bagels expense tracker is a TUI application where you can track and analyse your
 Some notable features include:
 
 - Accounts, (Sub)Categories, Splits, Transfers, Records
-- Templates for Recurring Transactions
-- Add Templated Record with Number Keys
+- Templates for Recurring Transactions (managed from the record modal, `ctrl+t`)
 - Clear Table Layout with Togglable Splits
 - Transfer to and from Outside Tracked Accounts
 - "Jump Mode" Navigation
 - Less and Less Fields to Enter per Transaction, Powered by Transactions and Input Modes
 - Insights
 - Customizable Keybindings and Defaults, such as First Day of Week
-- Label, amount and category filtering
 - Spending plottings / graphs with estimated spendings
 - Budgetting tool for saving money and limiting unnecessary spendings
 
 ## 🍴 Fork features ("Cuchuflí")
 
-This is a personal fork of [EnhancedJax/Bagels](https://github.com/EnhancedJax/Bagels), published as **Cuchuflí**. Upstream is inactive; this fork adds (see [CHANGELOG](CHANGELOG.md) for detail):
+**Cuchuflí** is a personal fork of [Bagels](https://github.com/EnhancedJax/Bagels) by EnhancedJax — a modified version (2026) of the original expense tracker. Upstream is inactive (last release v0.3.12, July 2025), so this fork carries its own improvements. All changes vs. the original Bagels (see [CHANGELOG](CHANGELOG.md) for detail):
 
-- **Category budgets**: monthly budget per category, with automatic rollup from subcategories, read-only parent rows, income-only categories excluded, and a docked Total row
-- **Whole-amount money (CLP)**: amounts render without decimals everywhere (respects `round_decimals: 0`)
+### Records
+
+- **Date column**: each record shows its day/month (`dd/mm`) — the week-range group headers (`25/10 - 01/11`) are gone; splits show their payment date
+- **Details bar**: full label + meta (date · category · account · amount · splits) of the selected row, always visible and keyboard-driven — no mouse needed
+- **Table fits the module width**: no horizontal scrolling, cells truncated with `…` and adaptive column widths
+- **Simplification**: the filter inputs (category/amount/label) and the dead "Date (q)" button were removed
+
+### Budgeting
+
+- **Category budgets**: monthly budget per category, with automatic rollup from subcategories, read-only parent rows, income-only categories excluded, and a docked Total row (budget / spent / left)
+- The Spending module is hidden in the Manager so the budgets table gets all the space
+
+### New modules
+
 - **Wishlist**: persistent priority list with manual reordering (`Shift+↑/↓`)
-- **Service accounts**: customer numbers for external providers (provider + account number + alias + notes), with editing and soft-delete archiving
+- **Service accounts**: customer numbers for external providers (provider + account number + alias + notes), with editing and soft-delete archiving — replaces the Templates module in Home
+
+### Money & themes
+
+- **Whole-amount money (CLP)**: amounts render without decimals everywhere (respects `round_decimals: 0`)
 - **Themes**: `caracol` (dark) and `papel` (light)
-- **Single-user simplification**: People module and "Display by Person" removed from the UI
+- Records default to the monthly period
+
+### Single-user simplifications
+
+- People module and "Display by Person" removed from the UI (the People data model and record splits still work)
 - Records default to the monthly period
 
 ## 📦 Installation
@@ -169,8 +187,13 @@ Backlog:
 - [ ] Add tests
 - [ ] Bank sync
 
+## 📜 License
+
+[GPL-3.0](LICENSE) — the same license as the original Bagels. The license text and original attribution are kept intact; all modifications to the original work are documented in [CHANGELOG](CHANGELOG.md) and summarized in this README.
+
 ## Attributions
 
+- **Cuchuflí is a modified fork of [Bagels](https://github.com/EnhancedJax/Bagels)** by EnhancedJax and contributors — all credit to them
 - Heavily inspired by [posting](https://posting.sh/)
 - Bagels is built with [textual](https://textual.textualize.io/)
 - It's called bagels because I like bagels
