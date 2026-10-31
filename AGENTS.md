@@ -1,8 +1,8 @@
-# AGENTS.md — Bagels (fork "Queque")
+# AGENTS.md — Bagels (fork "Queques")
 
 Tracker de gastos en TUI. **Fork local de [EnhancedJax/Bagels](https://github.com/EnhancedJax/Bagels)**
 (el repo upstream está inactivo: último release v0.3.12, jul 2025). Publicado como
-**Queque** en https://github.com/Caracolaracol/Queque. Rama de trabajo: `caracol`.
+**Queques** en https://github.com/Caracolaracol/Queques. Rama de trabajo: `caracol`.
 
 ## Stack
 

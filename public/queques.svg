@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Queques</title>
+  <defs>
+    <clipPath id="wedge">
+      <path d="M17.5 43.5 L45.5 43.5 L45.5 26 Q 31.5 33.5 17.5 43.5 Z"/>
+    </clipPath>
+  </defs>
+  <!-- slice of queque (tajada) with cream + manjar layers -->
+  <!-- manjar drop at the tip -->
+  <path d="M11.8 44 c 2.2 1.1 2.7 3.7 0.6 5.2 c -2 -1 -2.4 -3.5 -0.6 -5.2 z" fill="#C68B59"/>
+  <!-- crust wedge with domed top -->
+  <path d="M14 46 L49 46 L49 22 Q 31 31 14 46 Z" fill="#DE7F26" stroke="#DE7F26" stroke-width="4.5" stroke-linejoin="round"/>
+  <g clip-path="url(#wedge)">
+    <!-- crumb -->
+    <rect x="14" y="22" width="36" height="24" fill="#E8933F"/>
+    <!-- cream + manjar filling layer -->
+    <rect x="14" y="34.5" width="36" height="5.5" fill="#FFF5C8"/>
+    <rect x="14" y="36.6" width="36" height="1.9" fill="#C68B59"/>
+    <!-- crumb texture -->
+    <circle cx="28" cy="28.5" r="1.1" fill="#F0A45C"/>
+    <circle cx="37" cy="42.5" r="1.1" fill="#F0A45C"/>
+    <circle cx="41.5" cy="30.5" r="1" fill="#F0A45C"/>
+  </g>
+</svg>
