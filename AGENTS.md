@@ -62,6 +62,14 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
    persona en `_table_builder.py` (DisplayMode solo tiene DATE) y sin el case "p" de
    edición en `records/_cud.py`. Los splits por persona en el formulario de registro
    siguen funcionando (solo aparecen al togglear splits con `s`).
+5. **Wishlist reordenable** (módulo Wishlist): columna `position` en `models/wishlist.py`
+   (nullable, auto-migrada; backfill self-healing en `managers/wishlist.py::_backfill_positions`
+   — filas viejas reciben su `id`). `get_wishlist_items` ordena por `(position, id)`;
+   `add_wishlist_item` usa `max(position)+1`; `move_wishlist_item(id, ±1)` intercambia
+   posiciones con el vecino (no-op en bordes o id desconocido). UI: `Shift+↑/↓` (y
+   `Ctrl+↑/↓` ocultos) en `components/modules/wishlist.py`; el rebuild reselecciona por id
+   para que el cursor siga al item movido. Tests: `tests/managers/test_wishlist.py`
+   (8 tests, patrón in-memory + swap de Session).
 
 ## Gotchas (importantes)
 
@@ -77,9 +85,12 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
 - `dynamic_cache` (managers/utils.py) crea un `lru_cache()` nuevo por llamada → no cachea entre llamadas.
 - **Textual**: rebuild en cada keystroke pierde el foco del Input → persistir con Enter
   (`on_input_submitted`), no con `on_input_changed`.
+- **Wishlist**: `rebuild()` reselecciona por **id del item** (no por índice) para que el
+  cursor siga al item al reordenar. El binding `Enter` togglea done vía evento
+  `ListView.Selected`; no usar `ctrl+j` como atajo (en terminal = Enter).
 - Categorías default al primer arranque: 11 padres + 4 subcategorías c/u (ids 1–55).
 - El repo se clonó con `--depth 1` (historial shallow).
-- En este fork NO se ha tocado `themes.py` (el tema "caracol" de ghostty no está inyectado en bagels aún).
+- Temas `caracol` y `papel` disponibles en `themes.py` (`BUILTIN_THEMES`). `caracol` usa la paleta cerise/violet/ocre/platinum; `papel` usa la paleta clara compartida con fondo cálido `#FFF5C8`. El tema activo se elige en `state.theme` de `~/.config/bagels/config.yaml` (actualmente `papel`).
 
 ## Convenciones
 

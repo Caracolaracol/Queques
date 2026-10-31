@@ -43,8 +43,9 @@
 - Sin decimales en montos: inputs de budget (mensual, savings, wants), balances de cuentas,
   insights (neto/promedio), modal de transferencias y plantillas usan `money_str`
   (respeta `round_decimals=0` para CLP).
-- Tema "caracol" agregado a `BUILTIN_THEMES` (paleta personal: cerise, violet, lavanda, ocre, platinum).
-- Theme activo cambiado a `caracol` en config.
+- Temas "caracol" (oscura; paleta personal: cerise, violet, lavanda, ocre, platinum) y
+  "papel" (clara, fondo cálido `#FFF5C8`) agregados a `BUILTIN_THEMES`. El tema activo
+  se elige en `state.theme` del config (actualmente `papel`).
 - Records de la vista principal pasan de semanales a mensuales (`defaults.period: month` en config).
 
 ## 0.3.12
