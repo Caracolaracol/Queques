@@ -84,6 +84,11 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
    `on_resize` → `rebuild` para re-medir columnas. Backstop: `default_cell_formatter`
    en `datatable.py` aplica `overflow="ellipsis"` a celdas no-wrap. Gotcha:
    `rich.Text.truncate` es **in-place** y devuelve `None`.
+7. **Records sin filtros ni selector de modo**: removidos los inputs de filtro
+   (categoría/monto/label + toggle), el botón "Date (q)" y la hotkey `display_by_date`
+   (fuera también de `config.py` y del `config.yaml`). Sin `FILTERS`, sin highlight de
+   labels. Quedó solo `DisplayMode.DATE` (sin UI para cambiarlo). La tabla usa toda la
+   altura del módulo.
 
 ## Gotchas (importantes)
 

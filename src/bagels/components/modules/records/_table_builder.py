@@ -76,10 +76,6 @@ class RecordTableBuilder:
         }
         if self.page_parent.filter["byAccount"]:
             params["account_id"] = self.page_parent.mode["accountId"]["default_value"]
-        if self.FILTERS["enabled"]():
-            params["category_piped_names"] = self.FILTERS["category"]()
-            params["operator_amount"] = self.FILTERS["amount"]()
-            params["label"] = self.FILTERS["label"]()
         return get_records(
             **params,
         )
@@ -90,17 +86,6 @@ class RecordTableBuilder:
         match self.displayMode:
             case DisplayMode.DATE:
                 table.add_columns(" ", "Date", "Category", "Amount", "Label", "Account")
-
-    def _get_label_string(self, text) -> str:
-        if self.FILTERS["enabled"]():
-            highlight_style = self.get_component_rich_style("label-highlight-match")
-            text = Text(text)
-            text.highlight_words(
-                [self.FILTERS["label"]()],
-                style=highlight_style,
-                case_sensitive=False,
-            )
-        return text
 
     def _table_width(self) -> int:
         """Usable width (in cells) for the table inside its module."""
@@ -192,7 +177,6 @@ class RecordTableBuilder:
                     label.truncate(label_budget, overflow="ellipsis")
                 else:
                     label = _truncate(str(label), label_budget)
-                    label = self._get_label_string(label)
             if details is not None and key:
                 self._row_details[key] = details
                 if self._first_detail_row is None:

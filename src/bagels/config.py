@@ -27,7 +27,6 @@ class HomeHotkeys(BaseModel):
     budgets: str = "b"
     new_transfer: str = "t"
     toggle_splits: str = "s"
-    display_by_date: str = "q"
     advance_filter: str = "f"
     cycle_offset_type: str = "."
     toggle_income_mode: str = "/"

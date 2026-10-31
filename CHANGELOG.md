@@ -2,6 +2,10 @@
 
 ## Unreleased (fork caracol)
 
+- Records: removidos los **filtros** (inputs de categoría/monto/label y toggle) y el
+  botón **Date (q)** — este último no hacía nada (solo existía el modo DATE). La tabla
+  ocupa ahora toda la altura del módulo. La hotkey `display_by_date` también salió de
+  `config.py` y del `config.yaml`.
 - Records: nueva **columna Date** (`dd/mm`, según `defaults.date_format`) por fila —
   se eliminaron los group headers con rangos de semana (`25/10 - 01/11`); cada registro
   muestra su fecha directamente y los splits muestran su fecha de pago.

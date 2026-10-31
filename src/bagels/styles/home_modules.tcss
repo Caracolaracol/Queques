@@ -144,43 +144,6 @@
       background: $surface;
       color: $text;
     }
-
-    .selectors {
-      height: auto;
-      
-      & > #display-selector {
-        layout: horizontal;
-        align: center middle;
-        height: auto;
-      }
-  
-      & > #filter-container {
-        height: 3;
-        layout: horizontal;
-        border-top: round $panel;
-        border-bottom: round $panel;
-  
-        & > Switch {
-          padding: 0;
-          border: none;
-          background: $primary;
-          
-        }
-  
-        & > Input {
-          width: 1fr;
-          margin-right: 1;
-          
-          &:focus {
-            background: $surface-lighten-1;
-            padding-left: 1;
-            padding-right: 1;
-            border-left: none;
-        
-          }
-        }
-      }
-    }
   }
 
   .h {
