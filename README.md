@@ -1,4 +1,4 @@
-# 🥯 Cuchuflí
+# <img src="public/cuchufli.svg" width="48" height="48" align="absmiddle" alt="Cuchuflí icon"> Cuchuflí
 
 > Personal fork ("Cuchuflí") of [Bagels](https://github.com/EnhancedJax/Bagels) — a powerful expense tracker that lives in your terminal.
 
