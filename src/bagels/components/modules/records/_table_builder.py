@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime
 
 from rich.cells import cell_len
 from rich.text import Text
@@ -17,7 +17,7 @@ from bagels.utils.format import format_date_to_readable, money_str
 # horizontal scrolling — full text lives in the details bar below the table.
 CATEGORY_CAP = 18
 ACCOUNT_CAP = 12
-LABEL_MIN = 8
+LABEL_MIN = 6
 
 
 class DisplayMode:
@@ -89,7 +89,7 @@ class RecordTableBuilder:
         table.columns.clear()
         match self.displayMode:
             case DisplayMode.DATE:
-                table.add_columns(" ", "Category", "Amount", "Label", "Account")
+                table.add_columns(" ", "Date", "Category", "Amount", "Label", "Account")
 
     def _get_label_string(self, text) -> str:
         if self.FILTERS["enabled"]():
@@ -110,71 +110,48 @@ class RecordTableBuilder:
     # region Date view
     def _build_date_view(self, table: DataTable, records: list) -> None:
         # Column caps adapt to the module width so the table fits even in
-        # narrow windows; the Label column absorbs whatever remains.
+        # narrow windows; the Label column absorbs whatever remains. First
+        # reserve room for the non-flexible cells (icon, date, amount), all
+        # cell paddings and the minimum Label; the rest is shared by Category
+        # and Account (60/40) through their truncation caps.
         width = self._table_width()
-        self._cat_cap = min(CATEGORY_CAP, max(6, width // 4))
-        self._acc_cap = min(ACCOUNT_CAP, max(5, width // 5))
+        date_width = cell_len(datetime.now().strftime(CONFIG.defaults.date_format))
+        reserved = 2 + date_width + 9 + LABEL_MIN + 12
+        rest = max(width - reserved, 10)
+        self._cat_cap = min(CATEGORY_CAP, max(6, (rest * 3) // 5))
+        self._acc_cap = min(ACCOUNT_CAP, max(5, (rest * 2) // 5))
 
         # First pass: build every row with its display width so the elastic
         # Label column can be sized to make the whole table fit.
         rows = []  # (kind, key, cells, details)
-        widths = {"icon": 2, "category": 0, "amount": 0, "account": 0}
-        prev_group = None
+        widths = {"icon": 2, "date": 4, "category": 0, "amount": 0, "account": 0}
         for record in records:
             flow_icon = self._get_flow_icon(len(record.splits) > 0, record.isIncome)
             flow_plain = "+" if record.isIncome else "-"
 
+            date_string = record.date.strftime(CONFIG.defaults.date_format)
             category_string, amount_string, account_string = self._format_record_fields(
                 record, flow_icon
             )
+            widths["date"] = max(widths["date"], cell_len(date_string))
             widths["category"] = max(
                 widths["category"], self._plain_width(category_string)
             )
             widths["amount"] = max(widths["amount"], self._plain_width(amount_string))
             widths["account"] = max(widths["account"], cell_len(account_string))
 
-            # Add group header based on filter type
-            group_string = None
-            match self.page_parent.filter["offset_type"]:
-                case "year":
-                    # Group by month
-                    group_string = record.date.strftime("%B %Y")
-                case "month":
-                    # Group by week
-                    week_start = record.date - timedelta(
-                        days=(record.date.weekday() - CONFIG.defaults.first_day_of_week)
-                        % 7
-                    )
-                    week_end = week_start + timedelta(days=6)
-
-                    # Adjust week_start and week_end if they are not in the same month as record.date
-                    if week_start.month != record.date.month:
-                        week_start = record.date.replace(day=1)
-                    if week_end.month != record.date.month:
-                        last_day_of_month = (
-                            record.date.replace(day=1) + timedelta(days=32)
-                        ).replace(day=1) - timedelta(days=1)
-                        week_end = last_day_of_month
-
-                    group_string = f"{format_date_to_readable(week_start)} - {format_date_to_readable(week_end)}"
-                case "week":
-                    # Group by day
-                    group_string = format_date_to_readable(record.date)
-                case "day":
-                    # No grouping
-                    pass
-
-            if group_string and prev_group != group_string:
-                prev_group = group_string
-                group_string = _truncate(group_string, self._cat_cap)
-                widths["category"] = max(widths["category"], cell_len(group_string))
-                rows.append(("group", None, ("//", group_string, "", "", ""), None))
-
             rows.append(
                 (
                     "record",
                     f"r-{str(record.id)}",
-                    (None, category_string, amount_string, record.label, account_string),
+                    (
+                        None,
+                        date_string,
+                        category_string,
+                        amount_string,
+                        record.label,
+                        account_string,
+                    ),
                     self._record_details(record, flow_plain),
                 )
             )
@@ -186,11 +163,20 @@ class RecordTableBuilder:
         if not rows:
             return
 
-        # Second pass: fit columns to the module and add the rows.
-        widths["category"] = min(widths["category"], self._cat_cap)
-        widths["account"] = min(widths["account"], self._acc_cap)
+        # Second pass: fit columns to the module and add the rows. Each column
+        # is as wide as its (capped) content, but headers set a floor.
+        widths["icon"] = max(widths["icon"], cell_len(" "))
+        widths["date"] = max(widths["date"], cell_len("Date"))
+        widths["category"] = max(
+            min(widths["category"], self._cat_cap), cell_len("Category")
+        )
+        widths["amount"] = max(widths["amount"], cell_len("Amount"))
+        widths["account"] = max(
+            min(widths["account"], self._acc_cap), cell_len("Account")
+        )
         fixed = (
             (widths["icon"] + 2)
+            + (widths["date"] + 2)
             + (widths["category"] + 2)
             + (widths["amount"] + 2)
             + (widths["account"] + 2)
@@ -200,7 +186,7 @@ class RecordTableBuilder:
 
         self._first_detail_row = None
         for row_index, (kind, key, cells, details) in enumerate(rows):
-            icon, category, amount, label, account = cells
+            icon, date, category, amount, label, account = cells
             if label is not None:
                 if isinstance(label, Text):
                     label.truncate(label_budget, overflow="ellipsis")
@@ -211,9 +197,10 @@ class RecordTableBuilder:
                 self._row_details[key] = details
                 if self._first_detail_row is None:
                     self._first_detail_row = row_index
-            style_name = {"group": "group-header", "net": "net"}.get(kind)
+            style_name = {"net": "net"}.get(kind)
             table.add_row(
                 icon or " ",
+                date,
                 category,
                 amount,
                 label or "",
@@ -265,7 +252,9 @@ class RecordTableBuilder:
         for split in record.splits:
             paid_status_icon = self._get_split_status_icon(split)
             date_string = (
-                Text(f"Paid {format_date_to_readable(split.paidDate)}", style="italic")
+                Text(
+                    split.paidDate.strftime(CONFIG.defaults.date_format), style="italic"
+                )
                 if split.paidDate
                 else Text("-")
             )
@@ -275,6 +264,7 @@ class RecordTableBuilder:
             account_string = (
                 _truncate(split.account.name, self._acc_cap) if split.account else "-"
             )
+            widths["date"] = max(widths["date"], cell_len(date_string.plain))
             widths["category"] = max(
                 widths["category"], self._plain_width(category_string)
             )
@@ -294,13 +284,13 @@ class RecordTableBuilder:
                 (
                     "split",
                     f"s-{str(split.id)}",
-                    (" ", category_string, amount_string, date_string, account_string),
+                    (" ", date_string, category_string, amount_string, "", account_string),
                     details,
                 )
             )
 
         # Add net amount row
-        net_category = f"{finish_line_char} Self total"
+        net_category = f"{finish_line_char} {_truncate('Self total', self._cat_cap - 2)}"
         net_amount = f"= {money_str(amount_self)}"
         widths["category"] = max(widths["category"], self._plain_width(net_category))
         widths["amount"] = max(widths["amount"], self._plain_width(net_amount))
@@ -308,7 +298,7 @@ class RecordTableBuilder:
             (
                 "net",
                 None,
-                ("", net_category, net_amount, "", ""),
+                ("", "", net_category, net_amount, "", ""),
                 ("Self total", f"= {money_str(amount_self)}"),
             )
         )

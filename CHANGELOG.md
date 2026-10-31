@@ -2,6 +2,9 @@
 
 ## Unreleased (fork caracol)
 
+- Records: nueva **columna Date** (`dd/mm`, según `defaults.date_format`) por fila —
+  se eliminaron los group headers con rangos de semana (`25/10 - 01/11`); cada registro
+  muestra su fecha directamente y los splits muestran su fecha de pago.
 - Records: la tabla **se ajusta al ancho del módulo** — sin scroll horizontal ni
   texto cortado a mitad de palabra. Columnas Category/Account con tope adaptativo
   al ancho, Label elástico y truncado con `…` en todas las celdas. Nueva **barra
