@@ -70,6 +70,17 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
    `Ctrl+↑/↓` ocultos) en `components/modules/wishlist.py`; el rebuild reselecciona por id
    para que el cursor siga al item movido. Tests: `tests/managers/test_wishlist.py`
    (8 tests, patrón in-memory + swap de Session).
+6. **Records: tabla ajustada + barra de detalles** (`components/modules/records/`):
+   `_table_builder.py` construye las filas en dos pasas (contenido y luego anchos) y
+   trunca con `…` — caps adaptativos `self._cat_cap`/`self._acc_cap` según el ancho del
+   módulo, columna Label elástica (mínimo 8). Montos con `money_str` (sin `.0`).
+   Barra `#record-details` bajo la tabla con label completo + meta (fecha · categoría ·
+   cuenta · monto · splits) de la fila seleccionada, vía `self._row_details[key]`,
+   actualizada en `on_data_table_row_highlighted` y al final de `rebuild` (cursor inicial
+   en la primera fila con detalles, `_first_detail_row`). `on_resize` → `rebuild` para
+   re-medir columnas. Backstop: `default_cell_formatter` en `datatable.py` aplica
+   `overflow="ellipsis"` a celdas no-wrap. Gotcha: `rich.Text.truncate` es **in-place**
+   y devuelve `None`.
 
 ## Gotchas (importantes)
 

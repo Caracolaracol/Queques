@@ -207,8 +207,13 @@ def default_cell_formatter(
     if possible_markup:
         text = Text.from_markup(content, end="")
         text.no_wrap = not wrap
+        if not wrap:
+            text.overflow = "ellipsis"
         return text
-    return Text(content, no_wrap=not wrap, end="")
+    text = Text(content, no_wrap=not wrap, end="")
+    if not wrap:
+        text.overflow = "ellipsis"
+    return text
 
 
 @dataclass

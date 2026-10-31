@@ -138,6 +138,12 @@
 
 #records-container {
 
+    #record-details {
+      height: 2;
+      padding: 0 1;
+      background: $surface;
+      color: $text;
+    }
 
     .selectors {
       height: auto;

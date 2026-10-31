@@ -2,6 +2,13 @@
 
 ## Unreleased (fork caracol)
 
+- Records: la tabla **se ajusta al ancho del módulo** — sin scroll horizontal ni
+  texto cortado a mitad de palabra. Columnas Category/Account con tope adaptativo
+  al ancho, Label elástico y truncado con `…` en todas las celdas. Nueva **barra
+  de detalles** bajo la tabla con el contenido completo (label, fecha, categoría,
+  cuenta, monto, splits) de la fila seleccionada: sigue el cursor del teclado, sin
+  depender del mouse. Además los montos de la tabla ahora usan `money_str`
+  (sin `.0` en CLP; antes se filtraban como float crudo).
 - Nuevo módulo **Service accounts** en Home (reemplaza a Templates en esa
   columna): guarda números de cuenta de clientes por proveedor externo
   (proveedor + número + alias + notas), con edición y archivado (soft-delete

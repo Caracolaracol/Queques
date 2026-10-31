@@ -1,5 +1,6 @@
 from typing import ClassVar
 
+from rich.text import Text
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container
@@ -73,6 +74,26 @@ Records .label-highlight-match {
     # region Callbacks
     # ------------- Callbacks ------------ #
 
+    def on_resize(self, event) -> None:
+        # Column widths depend on the module width: rebuild so the table always
+        # fits without horizontal scrolling.
+        self.rebuild(focus=False)
+
+    def _update_details(self, row_key) -> None:
+        details_widget = self.query_one("#record-details")
+        details = (getattr(self, "_row_details", None) or {}).get(row_key)
+        if not details:
+            details_widget.update("")
+            details_widget.display = False
+            return
+        title, meta = details
+        text = Text()
+        text.append(title, style="bold")
+        text.append("\n")
+        text.append(meta, style="dim")
+        details_widget.update(text)
+        details_widget.display = True
+
     def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         current_row_index = event.cursor_row
         if event.row_key and event.row_key.value:
@@ -81,6 +102,7 @@ Records .label-highlight-match {
         else:
             self.current_row = None
             self.current_row_index = None
+        self._update_details(self.current_row)
 
     def watch_displayMode(self, displayMode: DisplayMode) -> None:
         self.query_one("#display-date").classes = (
@@ -146,4 +168,5 @@ Records .label-highlight-match {
             zebra_stripes=True,
         )
         yield self.table
+        yield Static(id="record-details", classes="record-details")
         yield EmptyIndicator("No entries")
