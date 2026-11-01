@@ -90,6 +90,13 @@ Rutas de datos reales: config `~/.config/bagels/config.yaml` · BD `~/.local/sha
    (fuera también de `config.py` y del `config.yaml`). Sin `FILTERS`, sin highlight de
    labels. Quedó solo `DisplayMode.DATE` (sin UI para cambiarlo). La tabla usa toda la
    altura del módulo.
+8. **Budgeting simplificado**: filas Savings y Wants removidas (config `savings_*` y
+   `wants_*` fuera de `BudgetingStates` y del config.yaml). La income bar reparte el
+   ingreso en **Spent | Budgeted | Remaining** donde Remaining = `ingreso − suma de
+   budgets` (sobrante sin asignar; rojo si < 0) y Budgeted = `suma budgets − gastado`
+   (clamp ≥ 0; anchos clamp a 100%). Desglose Must/Need/Want se mantiene con montos
+   (sin cuota, sin fila row-5 ni "Saved"). El ingreso de referencia sigue vía
+   `get_income_to_use` (`income_assess_*` intacto).
 
 ## Gotchas (importantes)
 

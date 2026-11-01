@@ -2,6 +2,13 @@
 
 ## Unreleased (Queques, fork caracol)
 
+- Budgeting: **Savings y Wants removidos** — la definición de ahorro vive en los
+  presupuestos por categoría, así que esas filas de config sobraban. La income bar
+  ahora reparte el ingreso en tres segmentos: **Spent** (gastado real), **Budgeted**
+  (lo que falta gastar de la suma de budgets) y **Remaining** (`ingreso − suma de
+  budgets`, el sobrante que ningún presupuesto cubre — rojo si presupuestaste de más).
+  El desglose Must/Need/Want se mantiene con montos, sin cuota de wants. Llaves
+  `savings_*`/`wants_*` fuera de `state.budgeting` (config.py y config.yaml).
 - Records: removidos los **filtros** (inputs de categoría/monto/label y toggle) y el
   botón **Date (q)** — este último no hacía nada (solo existía el modo DATE). La tabla
   ocupa ahora toda la altura del módulo. La hotkey `display_by_date` también salió de
